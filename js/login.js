@@ -1,26 +1,25 @@
-(function($) {
-    "use strict"; // Start of use strict
-      // Clic form
-        $("#login").on('click',async function(e) {
-            var email;
-            var pass;
-          
-            email	= $("#exampleInputEmail").val();
-            pass	= $("#exampleInputPassword").val();
+(function ($) {
+  "use strict"; // Start of use strict
+  // Clic form
+  $("#login").on('click', async function (e) {
+    var email;
+    var pass;
 
-            const datos = new FormData();
+    email = $("#exampleInputEmail").val();
+    pass = $("#exampleInputPassword").val();
 
-            datos.append("email", email);
-            datos.append("password", pass);
+    const datos = new FormData();
 
-            const response 		= await fetch("php/login.php", {method: "POST", body: datos});
-            const arrayResponse = await response.json();
+    datos.append("email", email);
+    datos.append("password", pass);
 
-            if(arrayResponse.error) return alert("Email y/o contraseña incorrectos");
-            
-            console.log(arrayResponse);
-          
-            window.location.href = "https://aplicaciones2.upaepcuc.com/proyecto_final/dashboard/";
-      });
-  })(jQuery); // End of use strict
-  
+    const response = await fetch("php/login.php", { method: "POST", body: datos });
+    const arrayResponse = await response.json();
+
+    if (arrayResponse.error) return alert("Email y/o contraseña incorrectos");
+
+    console.log(arrayResponse);
+
+    window.location.href = "https://aplicaciones2.upaepcuc.com/proyecto_final/dashboard/";
+  });
+})(jQuery); // End of use strict

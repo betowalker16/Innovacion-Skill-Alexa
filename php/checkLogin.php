@@ -13,18 +13,18 @@ if (mysqli_num_rows($result) == 1) {
     $fila = mysqli_fetch_assoc($result);
     // Verificar la contraseña
     if ($fila['password'] == $password) {
-        // Inicio de sesión exitoso, redireccionar a la página de inicio
+        // Inicio de sesión exitoso, redireccionar a lma página de inicio
         $_SESSION['usuario'] = $usuario;
-        header("Location: index.php");
+        header("Location: ../index.php");
         exit();
     } else {
         
-        header("Location: login.php");
+        header("Location: ../login.php");
         exit();
     }
 } else {
     
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
