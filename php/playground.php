@@ -1,3 +1,6 @@
+<?php
+  //error_reporting(0); // Desactiva la visualización de errores
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,10 +26,15 @@
 
         $user = $_SESSION['usuario'];
 
+        if (!isset($_SESSION['usuario'])) {
+          // Redirigir a la página de inicio de sesión
+          header('Location: ../login.php');
+          exit; // Es importante usar exit después de la redirección para asegurarse de que el código se detenga aquí
+      }
+
         $result = mysqli_query($link,"SELECT * from usuarios WHERE email = '$user';");
         $row = mysqli_fetch_array($result);
         $usuario = $row['id'];
-
     ?>
 
 
@@ -36,6 +44,30 @@
         <label for="texto">Texto:</label>
         <textarea name = "texto" class="form-control" id="texto" rows="3"></textarea>
       </div>
+
+      <div class="form-group">
+          <label for="pitch">Volumen:</label>
+          <input type="range" id="volume" name="volume" min="0" max="1" step="0.01" class="form-range form-control-range ">
+          </div>
+
+          <div class="form-group">
+          <label for="pitch">Velocidad:</label>
+          <input type="range" id="rate" name="rate" min="0" max="2" step="0.01" class="form-range form-control-range ">
+          </div>
+          <div class="form-group">
+          <label for="pitch">Pitch:</label>
+          <input type="range" id="pitch" name="pitch" min="0" max="2" step="0.01" class="form-range form-control-range ">
+          </div>
+          <div class="form-group">
+            <label for="language">Voz:</label>
+            <select id="voiceSelect" name="language" class="form-control mb-3">
+              <option value="es-MX" selected>Voz Masculina</option>
+              <option value="es-ES">Voz Femenina</option>
+              <option value="en-US">Male Voice</option>
+            </select>
+
+       
+          </div>
     </form>
     
     <div class="row">
@@ -115,9 +147,9 @@
       });
     });
     
-  </script>
+</script>
 
-  <script>
+<script>
     function limpiarTextArea() {
 			document.getElementById("texto").value = "";
 		}
@@ -134,45 +166,67 @@
 
     function reproducir(){
       const forms = document.getElementById('formTexto');
-      var val = document.getElementById("texto").value;
-      
+      var val = document.getElementById("voiceSelect").value;
       forms.submit();
     }
+
+    function hablar(){
+      document.getElementById('voiceSelect').value = '<?php 
+        if(isset($_POST['language'])){
+          echo $_POST['language'];
+          
+        }else{
+          echo 'es-MX';
+        }
+        ?>';
+       
+      document.getElementById('rate').value = '<?php 
+        if(isset($_POST['rate'])){
+          echo $_POST['rate'];
+          
+        }else{
+          echo '1';
+        }
+        ?>';
+      document.getElementById('pitch').value = '<?php 
+        if(isset($_POST['pitch'])){
+          echo $_POST['pitch'];
+          
+        }else{
+          echo '1';
+        }
+        ?>';
+      document.getElementById('volume').value = '<?php 
+        if(isset($_POST['volume'])){
+          echo $_POST['volume'];
+          
+        }else{
+          echo '1';
+        }
+        ?>';
+      const msgForm = document.getElementById('msgForm');
+      const textArea = document.getElementById('textArea');
+  
+      
+    }
+
+    function hablarTexto(mensaje) {
+        
+        var synthesis = window.speechSynthesis;
+        var utterance = new SpeechSynthesisUtterance();
+        utterance.text = mensaje;
+        utterance.lang = document.getElementById('voiceSelect').value;
+        utterance.rate = document.getElementById('rate').value;
+        utterance.pitch =  document.getElementById('pitch').value;
+        utterance.volume = document.getElementById('volume').value;
+        synthesis.speak(utterance);
+      }
 
     
   
 </script>
 
-<div class="container">
-    <div class="row">
-      <div class="col-md-12">
-       
-        <form action="" id="msgForm">
 
-          <div class="form-group">
-          <label for="pitch">Volumen:</label>
-          <input type="range" id="volume" name="volume" min="0" max="1" step="0.01" class="form-range form-control-range ">
-          </div>
-
-          <div class="form-group">
-          <label for="pitch">Velocidad:</label>
-          <input type="range" id="rate" name="rate" min="0" max="2" step="0.01" class="form-range form-control-range ">
-          </div>
-          <div class="form-group">
-          <label for="pitch">Pitch:</label>
-          <input type="range" id="pitch" name="pitch" min="0" max="2" step="0.01" class="form-range form-control-range ">
-          </div>
-          <div class="form-group">
-            <label for="language">Voz:</label>
-            <select id="voiceSelect" name="language" class="form-control mb-3">
-              <option value="es-MX" selected>Voz Masculina</option>
-              <option value="es-ES">Voz Femenina</option>
-              <option value="en-US">Male Voice</option>
-            </select>
-
-       
-          </div>
-        </form>
   
 <style>
     input[type=range] {
@@ -269,8 +323,6 @@
 <?php
     if(isset($_POST['texto'])){
     
-      
-
       $msg =$_POST['texto'];
       
       echo "<script> document.getElementById('texto').value  = '$msg' </script>";
@@ -279,42 +331,15 @@
       socket_connect($sock,$host,$port);
       socket_write($sock,$msg,strlen($msg));
 
-    
-
+      echo "<script> 
+      
+      hablar();
+      hablarTexto('$msg');
+      
+      
+      </script>";
+    }
 ?>
-      <script>
-      document.getElementById('voiceSelect').value = <?php $_POST['language'] ?>;
-      document.getElementById('rate').value =1 ;
-      document.getElementById('pitch').value =1 ;
-      document.getElementById('volume').value =1 ;
-      const msgForm = document.getElementById('msgForm');
-      const textArea = document.getElementById('textArea');
-      
-
-      
-      function hablar(mensaje) {
-        
-        var synthesis = window.speechSynthesis;
-        var utterance = new SpeechSynthesisUtterance();
-        utterance.text = mensaje;
-        utterance.lang = document.getElementById('voiceSelect').value;
-        utterance.rate = document.getElementById('rate').value;
-        utterance.pitch =  document.getElementById('pitch').value;
-        utterance.volume = document.getElementById('volume').value;
-        synthesis.speak(utterance);
-      }
-
-      <?php
-
-        
-       echo "hablar('$msg');"
-        
-      ?>
-  </script>
-  
-      
-<?php } ?>
-    
 
 
 

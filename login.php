@@ -7,6 +7,8 @@
     <meta name="description" content="Este mi proyecto final">
     <meta name="author" content="">
     <title>Inicio de sesion</title>
+    <script type="text/javascript" src="/test/wp-content/themes/child/script/jquery.jcarousel.min.js"></script>
+
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
@@ -63,18 +65,31 @@
 
     </div>
 
+
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
     <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.getElementById('login').addEventListener('click', function(event) {
+    event.preventDefault();
 
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    // Obtener los valores de los campos de entrada
+    var email = document.getElementById('exampleInputEmail').value;
+    var password = document.getElementById('exampleInputPassword').value;
 
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
+    // Validar que ambos campos estén llenos
+    if (email === '' || password === '') {
+        alert('Por favor, completa todos los campos.');
+        return;
+    }
 
-    <!-- Custom scripts for all pages-->
-    <script src="js/login.js?v=1.3"></script>
+    // Si los campos están llenos, enviar el formulario
+    document.forms[0].submit();
+});
+
+    </script>
+
+    
+
 </body>
 
 </html>

@@ -2,10 +2,12 @@
   session_set_cookie_params(3600);
   session_start();
 
-  if(!isset($_SESSION['usuario'])) {
-    header("Location: login.php");
-    die();
+  if (!isset($_SESSION['usuario'])) {
+    // Redirigir a la página de inicio de sesión
+    header('Location: ../login.php');
+    exit; // Es importante usar exit después de la redirección para asegurarse de que el código se detenga aquí
   }
+  
 ?>
 
 
